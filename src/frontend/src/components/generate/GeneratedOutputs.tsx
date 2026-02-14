@@ -8,18 +8,20 @@ interface GeneratedOutputsProps {
 }
 
 export default function GeneratedOutputs({ output, onOutputsEdited }: GeneratedOutputsProps) {
-  const [upworkProposal, setUpworkProposal] = useState(output.upworkFreeProposal);
-  const [coldEmail, setColdEmail] = useState(output.coldEmailPitch);
-  const [shortDM, setShortDM] = useState(output.shortDmPitch);
-  const [pricing, setPricing] = useState(output.pricingBreakdown);
+  const [upworkProposal, setUpworkProposal] = useState(output.upworkFreeProposal || '');
+  const [coldEmail, setColdEmail] = useState(output.coldEmailPitch || '');
+  const [shortDM, setShortDM] = useState(output.shortDmPitch || '');
+  const [pricing, setPricing] = useState(output.pricingBreakdown || '');
 
+  // Update local state when output prop changes
   useEffect(() => {
-    setUpworkProposal(output.upworkFreeProposal);
-    setColdEmail(output.coldEmailPitch);
-    setShortDM(output.shortDmPitch);
-    setPricing(output.pricingBreakdown);
+    setUpworkProposal(output.upworkFreeProposal || '');
+    setColdEmail(output.coldEmailPitch || '');
+    setShortDM(output.shortDmPitch || '');
+    setPricing(output.pricingBreakdown || '');
   }, [output]);
 
+  // Notify parent of edits
   useEffect(() => {
     onOutputsEdited({
       upworkFreeProposal: upworkProposal,

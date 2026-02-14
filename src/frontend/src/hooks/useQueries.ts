@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { type ProposalInput, type ProposalOutput, type SavedProposal, type UserProfile, SubscriptionPlan } from '../backend';
+import { toNumber } from '../utils/number';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
@@ -46,19 +47,28 @@ export function useSaveCallerUserProfile() {
   });
 }
 
-// Entitlements Query
+// Normalized entitlements interface for UI consumption
+export interface NormalizedEntitlements {
+  plan: 'free' | 'premium';
+  remainingFreeGenerations: number;
+  totalGenerations: number;
+}
+
+// Entitlements Query - returns normalized numbers for UI
 export function useGetEntitlements() {
   const { actor, isFetching } = useActor();
 
-  return useQuery({
+  return useQuery<NormalizedEntitlements | null>({
     queryKey: ['entitlements'],
     queryFn: async () => {
       if (!actor) return null;
       const status = await actor.getUserSubscriptionStatus();
+      
+      // Normalize bigint values to numbers for safe UI usage
       return {
         plan: Object.keys(status.plan)[0] as 'free' | 'premium',
-        remainingFreeGenerations: status.remainingFreeGenerations,
-        totalGenerations: status.totalGenerations,
+        remainingFreeGenerations: toNumber(status.remainingFreeGenerations),
+        totalGenerations: toNumber(status.totalGenerations),
       };
     },
     enabled: !!actor && !isFetching,

@@ -1,192 +1,75 @@
 {
   "kind": "build_request",
-  "title": "ProposalPro AI — Proposal & Pitch Generator SaaS with Editing, Saved Dashboard, Auth, and Usage-Limited Subscription",
-  "priority": "normal",
+  "title": "Fix React runtime crash on Generate (Minified React error #185) and clear related runtime/type errors",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Create the core app shell for “ProposalPro AI” with a professional, minimal, clean SaaS dashboard UI, including top-level navigation and routing for: Generate, Dashboard (saved proposals), and Account/Upgrade.",
+      "id": "REQ-10",
+      "text": "Fix the runtime crash that occurs immediately after clicking “Generate Proposals” on /generate (Minified React error #185), ensuring the Generate flow completes and the Generated Content renders successfully.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "Build a SaaS web app called “ProposalPro AI”.",
-          "UI style: Professional, minimal, clean SaaS dashboard."
+          "Minified React error #185... When I am trying to generate proposals, this error is coming on the screen.",
+          "Please fix it. Please clear all the errors and fix it, test it so that it's ready to use without any errors."
         ]
       },
       "acceptanceCriteria": [
-        "App has a consistent dashboard layout (header/sidebar or top-nav) with clear navigation to Generate, Dashboard, and Account/Upgrade sections.",
-        "Visual design is minimal and professional (e.g., neutral background, high-contrast typography, restrained accent color; avoid blue/purple unless user requested).",
-        "All user-facing text is in English."
+        "From a logged-in session, clicking “Generate Proposals” on /generate does not crash the app and no React error overlay appears.",
+        "After generation completes, the “Generated Content” section renders with all four output sections (Upwork Proposal, Cold Email Pitch, Short DM Pitch, Pricing Breakdown).",
+        "No runtime exceptions occur from numeric comparisons/conversions related to entitlements or proposal generation state (e.g., BigInt vs number issues)."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Implement Internet Identity login and logged-in session gating so only authenticated users can generate, view, and save proposals; show a logged-out landing state with a clear call-to-action to sign in.",
+      "id": "REQ-11",
+      "text": "Normalize subscription/entitlements numeric values used in the UI so that comparisons and rendering are safe and consistent across the app (e.g., remaining free generations and total generations), and update Generate gating logic accordingly.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "Add user login system"
+          "When I am trying to generate proposals, this error is coming on the screen."
         ]
       },
       "acceptanceCriteria": [
-        "Logged-out users see a landing screen with a “Sign in” action.",
-        "Logged-in users can access Generate/Dashboard pages and see their principal/account indicator and a sign-out action.",
-        "No edits are made to immutable hook files; the UI composes existing Internet Identity hooks/components as provided by the template."
+        "All places that compute `canGenerate` or compare remaining generations work without throwing (including when remaining generations are returned as BigInt-like values from the backend bindings).",
+        "Quota UI (Generate page banner) correctly shows remaining generations and updates after a successful generation without errors.",
+        "Account/Upgrade plan UI correctly shows remaining free generations and total generations without errors."
       ]
     },
     {
-      "id": "REQ-3",
-      "text": "Add backend user profile and subscription state management: store per-user plan status (Free or Premium), remaining free generations, and a generation counter; expose query/update methods for the frontend to fetch current entitlements.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "subscription model (3 free proposals, premium unlimited)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend provides a method to fetch the caller’s entitlement status (plan + remaining free generations or unlimited).",
-        "Free users start with 3 available generations; Premium users have unlimited generations.",
-        "Entitlements are persisted across sessions and canister upgrades using stable storage patterns appropriate for a single-actor canister."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement the proposal/pitch generation workflow: accept user inputs (client job description, skills, experience level, portfolio link) and generate four outputs: Upwork proposal, cold email pitch, short DM pitch, and a pricing breakdown suggestion.",
+      "id": "REQ-12",
+      "text": "Add a minimal regression test pass (manual QA checklist) to validate proposal generation, quota decrementing for Free users, and stability of the Generate/Dashboard/Proposal Detail pages after the fix.",
       "target": "both",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "User inputs: Client job description / Their skills / Experience level / Portfolio link",
-          "AI generates: Upwork proposal / Cold email pitch / Short DM pitch / Pricing breakdown suggestion"
+          "Please clear all the errors and fix it, test it so that it's ready to use without any errors."
         ]
       },
       "acceptanceCriteria": [
-        "Generate form includes fields for job description, skills, experience level, and portfolio link with basic validation (required fields where appropriate).",
-        "On generate, the UI displays four distinct generated sections: Upwork Proposal, Cold Email Pitch, Short DM Pitch, Pricing Breakdown Suggestion.",
-        "Generation is performed without third-party LLM integrations (use deterministic templating/heuristics on the backend consistent with platform limitations)."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Enforce usage limits: generating content consumes 1 free generation for Free users until 0 remain; Premium users are not limited; show clear UI messaging when the free quota is exhausted and guide users to the Upgrade screen.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "subscription model (3 free proposals, premium unlimited)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each successful generation decrements the remaining free count for Free users exactly once.",
-        "When remaining free generations reaches 0, further generate attempts are blocked with a clear message and an Upgrade call-to-action.",
-        "Premium users can generate repeatedly without being blocked."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Provide an editing mode for generated content before copying: allow users to edit each of the four generated outputs in-place (or via an editor view) and then copy each section to the clipboard.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Include editing mode before copying."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each generated output can be toggled into an editable state (e.g., textarea/editor) and saved locally in UI state.",
-        "Each section has a “Copy” action that copies the edited version (not the original) to the clipboard.",
-        "Editing does not require consuming additional generations."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Implement saving and dashboard history: allow users to save a generated set (inputs + edited outputs) to their account and view a dashboard list of previous proposals; include proposal detail view and basic actions (view, delete).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Include dashboard to save previous proposals."
-        ]
-      },
-      "acceptanceCriteria": [
-        "After generating, the user can save the proposal set; saved items persist and are associated with the authenticated user.",
-        "Dashboard shows a list of saved proposal entries with at least: title/derived label, created date, and quick actions (view, delete).",
-        "Proposal detail view shows the original inputs and the saved outputs exactly as saved.",
-        "Deleting a saved proposal removes it from the dashboard and backend storage."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add an Account/Upgrade screen that displays current plan (Free/Premium), remaining free generations (if applicable), and an Upgrade call-to-action; implement backend endpoints to support plan display and (for now) a non-payment upgrade mechanism suitable for development environments.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "subscription model (3 free proposals, premium unlimited)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Account/Upgrade screen shows plan status and remaining free generations for Free users; shows unlimited for Premium.",
-        "Upgrade call-to-action is present and functional in a development-safe way (e.g., a clearly labeled “Developer Upgrade” action), without claiming real payment processing.",
-        "After upgrading, the UI immediately reflects Premium status and generation is unlimited."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add generated static brand assets and apply them in the UI: include a simple “ProposalPro AI” logo/wordmark and a small app icon, served from static frontend assets and used in the header and browser favicon.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Build a SaaS web app called “ProposalPro AI”."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Logo and icon images exist under frontend/public/assets/generated and are referenced by the UI.",
-        "Header displays the logo/wordmark alongside the app name or as the app name treatment.",
-        "App has a favicon/app icon set from the generated icon (where supported by the template)."
+        "Manual QA confirms: (1) Free user can generate until quota is exhausted; (2) quota decrements by 1 per generation; (3) when exhausted, user cannot generate and sees the appropriate messaging; (4) Premium user can generate without limits; (5) Saving a generated proposal works and it appears on Dashboard; (6) Viewing a saved proposal detail works; (7) Deleting a saved proposal works.",
+        "No new backend traps are triggered unexpectedly during normal usage (other than intended authorization/quota traps)."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single-actor Motoko canister (all logic in backend/main.mo).",
-    "Do not use external databases or third-party auth; only Internet Identity is supported for login.",
-    "Do not integrate third-party LLM providers (OpenAI/Anthropic/etc.); generation must be deterministic and self-contained.",
-    "Do not modify frontend files marked as immutable by the platform (compose provided hooks/components instead).",
-    "User-facing text must be in English."
+    "Do not edit files in frontend immutablePaths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Backend must remain single-actor with all Motoko logic in backend/main.mo.",
+    "Use English for any user-facing text."
   ],
   "nonGoals": [
-    "Real payment processing integration (e.g., Stripe Checkout) beyond a development-safe upgrade mechanism.",
-    "Real-time collaboration, chat, or WebSocket features.",
-    "Importing proposals from external platforms (Upwork APIs, email providers, etc.).",
-    "Mobile-native app builds (React Native/Flutter)."
+    "Adding new product features beyond fixing the Generate crash and clearing related errors.",
+    "Integrating external AI services or changing the deterministic content generation approach.",
+    "Changing authentication provider (Internet Identity remains the only auth)."
   ],
   "imageRequirements": {
-    "required": [
-      "Minimal black/charcoal wordmark logo reading “ProposalPro AI” on transparent background (proposalpro-logo.dim_512x128.png)",
-      "Simple geometric app icon (abstract document/pen motif) on transparent background (proposalpro-icon.dim_256x256.png)"
-    ],
+    "required": [],
     "edits": []
   },
   "userProfileUpdate": {

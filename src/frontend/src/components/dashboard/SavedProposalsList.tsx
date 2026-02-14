@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Eye, Trash2, FileText } from 'lucide-react';
 import { useGetSavedProposals, useDeleteProposal } from '../../hooks/useQueries';
 import { toast } from 'sonner';
+import { timestampToDate } from '../../utils/number';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,7 +67,7 @@ export default function SavedProposalsList() {
   return (
     <div className="space-y-4">
       {proposals.map((proposal) => {
-        const date = new Date(Number(proposal.timestamp) / 1000000);
+        const date = timestampToDate(proposal.timestamp);
         const title = proposal.input.clientJobDescription.slice(0, 80) + '...';
 
         return (

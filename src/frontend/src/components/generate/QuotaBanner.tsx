@@ -13,7 +13,7 @@ export default function QuotaBanner() {
   }
 
   const isPremium = entitlements.plan === 'premium';
-  const remaining = Number(entitlements.remainingFreeGenerations);
+  const remaining = entitlements.remainingFreeGenerations;
 
   if (isPremium) {
     return (

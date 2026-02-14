@@ -43,8 +43,8 @@ export default function PlanCard() {
   }
 
   const isPremium = entitlements.plan === 'premium';
-  const remaining = Number(entitlements.remainingFreeGenerations);
-  const total = Number(entitlements.totalGenerations);
+  const remaining = entitlements.remainingFreeGenerations;
+  const total = entitlements.totalGenerations;
 
   return (
     <div className="grid md:grid-cols-2 gap-6">

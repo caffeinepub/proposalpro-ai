@@ -8,6 +8,7 @@ import { ArrowLeft, Trash2, Copy } from 'lucide-react';
 import { useGetProposalById, useDeleteProposal } from '../hooks/useQueries';
 import { toast } from 'sonner';
 import { copyToClipboard } from '../utils/clipboard';
+import { timestampToDate } from '../utils/number';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,7 +79,7 @@ export default function ProposalDetailPage() {
     );
   }
 
-  const date = new Date(Number(proposal.timestamp) / 1000000);
+  const date = timestampToDate(proposal.timestamp);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -105,25 +106,35 @@ export default function ProposalDetailPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
       </div>
 
+      {/* Project Details */}
       <Card>
         <CardHeader>
-          <CardTitle>Project Details</CardTitle>
-          <CardDescription>
-            <div className="flex items-center gap-3 flex-wrap mt-2">
-              <span>Created {date.toLocaleDateString()}</span>
-              <Badge variant="outline">{proposal.input.experienceLevel}</Badge>
+          <div className="flex items-start justify-between">
+            <div className="space-y-1 flex-1">
+              <CardTitle>Project Details</CardTitle>
+              <CardDescription>
+                <div className="flex items-center gap-3 flex-wrap mt-2">
+                  <span>{date.toLocaleDateString()}</span>
+                  <Badge variant="outline">{proposal.input.experienceLevel}</Badge>
+                </div>
+              </CardDescription>
             </div>
-          </CardDescription>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-2">Job Description</h3>
+            <h4 className="font-semibold text-sm mb-2">Job Description</h4>
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">
               {proposal.input.clientJobDescription}
             </p>
@@ -131,21 +142,12 @@ export default function ProposalDetailPage() {
           <Separator />
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <h3 className="font-semibold mb-2">Skills</h3>
+              <h4 className="font-semibold text-sm mb-2">Skills</h4>
               <p className="text-sm text-muted-foreground">{proposal.input.skills}</p>
             </div>
-            <div>
-              <h3 className="font-semibold mb-2">Experience Level</h3>
-              <p className="text-sm text-muted-foreground capitalize">
-                {proposal.input.experienceLevel}
-              </p>
-            </div>
-          </div>
-          {proposal.input.portfolioLink && (
-            <>
-              <Separator />
+            {proposal.input.portfolioLink && (
               <div>
-                <h3 className="font-semibold mb-2">Portfolio</h3>
+                <h4 className="font-semibold text-sm mb-2">Portfolio</h4>
                 <a
                   href={proposal.input.portfolioLink}
                   target="_blank"
@@ -155,18 +157,19 @@ export default function ProposalDetailPage() {
                   {proposal.input.portfolioLink}
                 </a>
               </div>
-            </>
-          )}
+            )}
+          </div>
         </CardContent>
       </Card>
 
+      {/* Generated Outputs */}
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold">Generated Content</h2>
 
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Upwork Proposal</CardTitle>
+              <CardTitle>Upwork Proposal</CardTitle>
               <Button
                 size="sm"
                 variant="outline"
@@ -178,20 +181,18 @@ export default function ProposalDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {proposal.output.upworkFreeProposal}
-            </div>
+            <p className="text-sm whitespace-pre-wrap">{proposal.output.upworkFreeProposal}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Cold Email Pitch</CardTitle>
+              <CardTitle>Cold Email Pitch</CardTitle>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleCopy(proposal.output.coldEmailPitch, 'Cold Email')}
+                onClick={() => handleCopy(proposal.output.coldEmailPitch, 'Cold Email Pitch')}
               >
                 <Copy className="h-4 w-4 mr-2" />
                 Copy
@@ -199,20 +200,18 @@ export default function ProposalDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {proposal.output.coldEmailPitch}
-            </div>
+            <p className="text-sm whitespace-pre-wrap">{proposal.output.coldEmailPitch}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Short DM Pitch</CardTitle>
+              <CardTitle>Short DM Pitch</CardTitle>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => handleCopy(proposal.output.shortDmPitch, 'DM Pitch')}
+                onClick={() => handleCopy(proposal.output.shortDmPitch, 'Short DM Pitch')}
               >
                 <Copy className="h-4 w-4 mr-2" />
                 Copy
@@ -220,16 +219,14 @@ export default function ProposalDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {proposal.output.shortDmPitch}
-            </div>
+            <p className="text-sm whitespace-pre-wrap">{proposal.output.shortDmPitch}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Pricing Breakdown</CardTitle>
+              <CardTitle>Pricing Breakdown</CardTitle>
               <Button
                 size="sm"
                 variant="outline"
@@ -241,9 +238,7 @@ export default function ProposalDetailPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {proposal.output.pricingBreakdown}
-            </div>
+            <p className="text-sm whitespace-pre-wrap">{proposal.output.pricingBreakdown}</p>
           </CardContent>
         </Card>
       </div>

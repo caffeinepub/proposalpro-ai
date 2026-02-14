@@ -1,269 +1,87 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "ProposalPro AI — Frontend Dashboard, Auth Gating, Generation, Saving, Upgrade, and Brand Assets",
+  "title": "Stabilize Generate flow by fixing BigInt/plan normalization and React crash",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Build the core SaaS dashboard shell with navigation and routing for Generate, Dashboard, and Account/Upgrade.",
+      "id": "REQ-10",
+      "summary": "Fix the /generate runtime crash after clicking “Generate Proposals” so generation completes and Generated Content renders.",
       "acceptanceCriteria": [
-        "App has a consistent dashboard layout (header/sidebar or top-nav) with clear navigation to Generate, Dashboard, and Account/Upgrade sections.",
-        "Visual design is minimal and professional (e.g., neutral background, high-contrast typography, restrained accent color; avoid blue/purple unless user requested).",
-        "All user-facing text is in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "create",
-          "description": "Create the top-level app component that sets up routing and applies a consistent dashboard layout shell for authenticated areas (Generate, Dashboard, Account/Upgrade). Use shadcn-ui components to provide a clean, professional dashboard structure. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "create",
-          "description": "Implement the reusable dashboard layout (header/top-nav or sidebar, content container, active nav styling) used by authenticated routes. Use shadcn-ui components for navigation elements and layout primitives. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/routes/routes.tsx",
-          "operation": "create",
-          "description": "Define and export the application route configuration for Generate, Dashboard, Account/Upgrade, and any required detail sub-routes; ensure all created pages are reachable via navigation."
-        },
-        {
-          "path": "frontend/src/pages/GeneratePage.tsx",
-          "operation": "create",
-          "description": "Create the Generate page container and wire it into the app shell; page will host the generation form and outputs UI."
-        },
-        {
-          "path": "frontend/src/pages/DashboardPage.tsx",
-          "operation": "create",
-          "description": "Create the Dashboard page container and wire it into the app shell; page will host the saved proposals list."
-        },
-        {
-          "path": "frontend/src/pages/AccountPage.tsx",
-          "operation": "create",
-          "description": "Create the Account/Upgrade page container and wire it into the app shell; page will show plan/quota and upgrade action."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "create",
-          "description": "Add global styling tokens/utility overrides to support a minimal, neutral SaaS look (restrained accent, high-contrast typography) while remaining consistent with the existing Tailwind/shadcn setup."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add Internet Identity login, logged-in gating for app areas, and a logged-out landing state with sign-in CTA.",
-      "acceptanceCriteria": [
-        "Logged-out users see a landing screen with a “Sign in” action.",
-        "Logged-in users can access Generate/Dashboard pages and see their principal/account indicator and a sign-out action.",
-        "No edits are made to immutable hook files; the UI composes existing Internet Identity hooks/components as provided by the template."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/LandingPage.tsx",
-          "operation": "create",
-          "description": "Create a logged-out landing screen for ProposalPro AI with concise product messaging in English and a clear “Sign in” CTA. Compose the existing Internet Identity hook from the authorization component to trigger login. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/AuthGate.tsx",
-          "operation": "create",
-          "description": "Create an authentication gating wrapper that uses the existing Internet Identity hook (authorization component) to route unauthenticated users to the landing state and allow authenticated users into the dashboard shell. Ensure it clears any cached data on logout via React Query where appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/UserMenu.tsx",
-          "operation": "create",
-          "description": "Add a header user menu showing a non-sensitive account indicator for logged-in users and a sign-out action. Compose existing hooks from the authorization component; do not modify immutable hook files. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire AuthGate and LandingPage into the route tree so Generate/Dashboard/Account are inaccessible unless authenticated, while logged-out users see the landing state with sign-in."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Implement the proposal generation workflow UI with inputs, validation, and four distinct generated outputs rendered in the UI.",
-      "acceptanceCriteria": [
-        "Generate form includes fields for job description, skills, experience level, and portfolio link with basic validation (required fields where appropriate).",
-        "On generate, the UI displays four distinct generated sections: Upwork Proposal, Cold Email Pitch, Short DM Pitch, Pricing Breakdown Suggestion.",
-        "Generation is performed without third-party LLM integrations (use deterministic templating/heuristics on the backend consistent with platform limitations)."
+        "From a logged-in session, clicking “Generate Proposals” on /generate does not crash the app and no React error overlay appears.",
+        "After generation completes, the “Generated Content” section renders with all four output sections (Upwork Proposal, Cold Email Pitch, Short DM Pitch, Pricing Breakdown).",
+        "No runtime exceptions occur from numeric comparisons/conversions related to entitlements or proposal generation state (e.g., BigInt vs number issues)."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/generate/GenerateForm.tsx",
-          "operation": "create",
-          "description": "Create the input form for client job description, skills, experience level, and portfolio link with basic validation and submit handling. Use shadcn-ui form controls (inputs/textarea/select/button) for a clean SaaS look. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Fix Generate gating and submit flow to avoid BigInt/number comparison crashes by relying on normalized entitlement numbers and ensuring Generate button disable logic is derived from safe numeric values. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Adjust proposal generation mutation success handling to ensure entitlement cache invalidation and UI refresh are stable after generation, with entitlements returned in a normalized UI-safe shape used by /generate. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/components/generate/GeneratedOutputs.tsx",
-          "operation": "create",
-          "description": "Render the four distinct generated sections (Upwork Proposal, Cold Email Pitch, Short DM Pitch, Pricing Breakdown Suggestion) in a clear, scannable layout using shadcn-ui cards/typography primitives. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useGenerateProposal.ts",
-          "operation": "create",
-          "description": "Implement a React Query mutation hook that calls the backend capability to generate a proposal using the existing actor hook (compose, do not modify immutable hooks). Return the generated output for the UI."
-        },
-        {
-          "path": "frontend/src/pages/GeneratePage.tsx",
           "operation": "modify",
-          "description": "Wire GenerateForm + GeneratedOutputs together: collect inputs, invoke generation mutation, and display outputs upon success; ensure all user-facing text is English."
+          "description": "Confirm generated output rendering and edit propagation remain stable when output updates after generation; ensure no state updates can lead to rendering invalid (e.g., undefined sections). Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-5",
-      "summary": "Enforce and display usage limits in the UI, blocking generation when free quota is exhausted and guiding users to Upgrade.",
+      "id": "REQ-11",
+      "summary": "Normalize subscription/entitlements numeric values across the UI and update Generate gating and quota display logic accordingly.",
       "acceptanceCriteria": [
-        "Each successful generation decrements the remaining free count for Free users exactly once.",
-        "When remaining free generations reaches 0, further generate attempts are blocked with a clear message and an Upgrade call-to-action.",
-        "Premium users can generate repeatedly without being blocked."
+        "All places that compute `canGenerate` or compare remaining generations work without throwing (including when remaining generations are returned as BigInt-like values from the backend bindings).",
+        "Quota UI (Generate page banner) correctly shows remaining generations and updates after a successful generation without errors.",
+        "Account/Upgrade plan UI correctly shows remaining free generations and total generations without errors."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useEntitlements.ts",
+          "path": "frontend/src/utils/number.ts",
           "operation": "create",
-          "description": "Create a React Query hook to fetch and cache the current user's subscription/entitlement status from the backend capability and expose helpers for UI (free vs premium, remaining quota)."
+          "description": "Add shared numeric normalization helpers for UI (e.g., safe conversion from bigint/unknown to number with predictable fallbacks) to prevent runtime errors in comparisons and rendering."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Normalize entitlements returned from getUserSubscriptionStatus by (1) using the correct plan value (string enum) and (2) converting remainingFreeGenerations/totalGenerations to UI-safe numbers via shared helpers, so all consumers can compare/render without BigInt issues. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/components/generate/QuotaBanner.tsx",
-          "operation": "create",
-          "description": "Add a small UI banner/status element that shows current plan and remaining free generations (or unlimited). Include a clear Upgrade call-to-action when quota is low/empty. Use shadcn-ui alert/badge/button components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/GeneratePage.tsx",
           "operation": "modify",
-          "description": "Integrate entitlement status into the generate workflow: disable/guard generate action when plan is Free and remaining is 0; show clear messaging and navigation to Account/Upgrade; refetch entitlements after a successful generation so the UI updates immediately."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Add editing mode for each generated section and allow copying the edited content to clipboard without consuming additional generations.",
-      "acceptanceCriteria": [
-        "Each generated output can be toggled into an editable state (e.g., textarea/editor) and saved locally in UI state.",
-        "Each section has a “Copy” action that copies the edited version (not the original) to the clipboard.",
-        "Editing does not require consuming additional generations."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/generate/EditableOutputSection.tsx",
-          "operation": "create",
-          "description": "Create a reusable component for one generated section that supports view/edit toggle (e.g., textarea in edit mode), local state persistence, and a Copy action that copies the edited version. Use shadcn-ui button/textarea/card components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/generate/GeneratedOutputs.tsx",
-          "operation": "modify",
-          "description": "Update output rendering to use EditableOutputSection for each of the four sections and ensure the copy action uses edited content."
-        },
-        {
-          "path": "frontend/src/utils/clipboard.ts",
-          "operation": "create",
-          "description": "Add a small clipboard utility (using the browser clipboard API with fallback messaging) used by EditableOutputSection."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Enable saving generated sets and browsing saved history in a dashboard list with proposal detail view and delete action.",
-      "acceptanceCriteria": [
-        "After generating, the user can save the proposal set; saved items persist and are associated with the authenticated user.",
-        "Dashboard shows a list of saved proposal entries with at least: title/derived label, created date, and quick actions (view, delete).",
-        "Proposal detail view shows the original inputs and the saved outputs exactly as saved.",
-        "Deleting a saved proposal removes it from the dashboard and backend storage."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useSavedProposals.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for listing saved proposals, fetching a saved proposal by id, saving a proposal, and deleting a proposal via backend capabilities; ensure queries invalidate/refetch appropriately after save/delete."
-        },
-        {
-          "path": "frontend/src/components/generate/SaveProposalButton.tsx",
-          "operation": "create",
-          "description": "Add a Save action shown after generation that persists the current set (inputs + edited outputs) to the backend capability and confirms success/failure in the UI. Use shadcn-ui button/toast patterns. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/GeneratePage.tsx",
-          "operation": "modify",
-          "description": "Wire the SaveProposalButton to the current inputs and edited outputs; ensure saving uses the edited versions and does not trigger generation or quota consumption."
-        },
-        {
-          "path": "frontend/src/components/dashboard/SavedProposalsList.tsx",
-          "operation": "create",
-          "description": "Implement the dashboard list UI showing saved entries with a derived title/label, created date, and quick actions (view, delete). Use shadcn-ui table/list/card + buttons. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/DashboardPage.tsx",
-          "operation": "modify",
-          "description": "Wire SavedProposalsList into the Dashboard page and ensure it fetches and renders the user's saved proposals."
-        },
-        {
-          "path": "frontend/src/pages/ProposalDetailPage.tsx",
-          "operation": "create",
-          "description": "Create a proposal detail view page that loads a saved proposal by id and displays original inputs and saved outputs exactly as stored, with a delete action."
-        },
-        {
-          "path": "frontend/src/routes/routes.tsx",
-          "operation": "modify",
-          "description": "Add and wire the proposal detail route (reachable from Dashboard via View action) so it is not an orphan view and remains behind authentication gating."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Implement the Account/Upgrade screen showing plan/quota and a development-safe upgrade action that updates the UI immediately.",
-      "acceptanceCriteria": [
-        "Account/Upgrade screen shows plan status and remaining free generations for Free users; shows unlimited for Premium.",
-        "Upgrade call-to-action is present and functional in a development-safe way (e.g., a clearly labeled “Developer Upgrade” action), without claiming real payment processing.",
-        "After upgrading, the UI immediately reflects Premium status and generation is unlimited."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useUpgradeToPremium.ts",
-          "operation": "create",
-          "description": "Create a React Query mutation hook to call the backend capability to upgrade the current user to Premium in a development-safe way, and invalidate entitlement queries afterward."
+          "description": "Update quota banner to use normalized numeric entitlements values (no direct BigInt to Number assumptions in render) and keep messaging correct for Free vs Premium users. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/components/account/PlanCard.tsx",
-          "operation": "create",
-          "description": "Create a plan/entitlement display card showing current plan, remaining free generations or unlimited, and total generations. Use shadcn-ui card/badge/button components. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Update account plan/usage UI to use normalized numeric entitlements values for remaining and total generations, avoiding BigInt rendering/comparison pitfalls. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/pages/AccountPage.tsx",
+          "path": "frontend/src/components/dashboard/SavedProposalsList.tsx",
           "operation": "modify",
-          "description": "Wire entitlement fetching and upgrade mutation into the Account/Upgrade screen; include a clearly labeled “Developer Upgrade” CTA and update the UI immediately on success (refetch entitlements)."
+          "description": "Harden timestamp-to-date rendering by using shared numeric normalization helpers when converting bigint timestamps to numbers, preventing potential runtime issues on large values. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/ProposalDetailPage.tsx",
+          "operation": "modify",
+          "description": "Harden proposal detail timestamp-to-date rendering by using shared numeric normalization helpers when converting bigint timestamps to numbers, preventing potential runtime issues on large values. Verify the component's usage instructions before implementing."
         }
       ]
     },
     {
-      "id": "REQ-9",
-      "summary": "Add generated static brand assets (logo + icon) and apply them in the header and favicon.",
+      "id": "REQ-12",
+      "summary": "Add a minimal manual QA checklist regression pass for Generate, quota behavior, and saved proposal flows.",
       "acceptanceCriteria": [
-        "Logo and icon images exist under frontend/public/assets/generated and are referenced by the UI.",
-        "Header displays the logo/wordmark alongside the app name or as the app name treatment.",
-        "App has a favicon/app icon set from the generated icon (where supported by the template)."
+        "Manual QA confirms: (1) Free user can generate until quota is exhausted; (2) quota decrements by 1 per generation; (3) when exhausted, user cannot generate and sees the appropriate messaging; (4) Premium user can generate without limits; (5) Saving a generated proposal works and it appears on Dashboard; (6) Viewing a saved proposal detail works; (7) Deleting a saved proposal works.",
+        "No new backend traps are triggered unexpectedly during normal usage (other than intended authorization/quota traps)."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/proposalpro-logo.dim_512x128.png",
+          "path": "frontend/QA-MANUAL.md",
           "operation": "create",
-          "description": "Add the generated wordmark logo asset at frontend/public/assets/generated/proposalpro-logo.dim_512x128.png and ensure it is used by the header UI."
-        },
-        {
-          "path": "frontend/public/assets/generated/proposalpro-icon.dim_256x256.png",
-          "operation": "create",
-          "description": "Add the generated app icon asset at frontend/public/assets/generated/proposalpro-icon.dim_256x256.png and ensure it is used for favicon/app icons where supported."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "modify",
-          "description": "Update the header area to display the logo/wordmark (frontend/public/assets/generated/proposalpro-logo.dim_512x128.png) alongside the product name treatment."
-        },
-        {
-          "path": "frontend/index.html",
-          "operation": "modify",
-          "description": "Wire the favicon/app icon metadata to reference frontend/public/assets/generated/proposalpro-icon.dim_256x256.png (where supported by the template tooling) while keeping the title as ProposalPro AI."
+          "description": "Create a concise manual QA checklist covering Generate flow, quota decrementing/exhaustion messaging, Premium unlimited behavior, save-to-dashboard, proposal detail view, and delete flow, including a quick sanity check for no runtime errors."
         }
       ]
     }

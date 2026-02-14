@@ -10,6 +10,7 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
 actor {
+  // Type definitions for user subscriptions and proposals
   type SubscriptionPlan = {
     #free;
     #premium;
@@ -36,7 +37,7 @@ actor {
   };
 
   type SavedProposal = {
-    id : Nat;
+    id : Nat; // Add unique identifier
     userId : Principal;
     input : ProposalInput;
     output : ProposalOutput;
@@ -81,6 +82,7 @@ actor {
       Runtime.trap("Unauthorized: Only users can generate proposals");
     };
 
+    // Check if the user has a valid subscription
     let profile = getOrCreateCallerProfile(caller);
     switch (profile.plan) {
       case (#free) {
@@ -149,6 +151,7 @@ actor {
       Runtime.trap("Unauthorized: Only users can save proposals");
     };
 
+    // Generate unique ID for the proposal
     let newId = nextProposalId;
     nextProposalId += 1;
 
@@ -166,7 +169,7 @@ actor {
     };
     userProposals.add(newId, savedProposal);
     savedProposals.add(caller, userProposals);
-    newId;
+    newId; // Return the new proposal ID
   };
 
   public query ({ caller }) func getSavedProposals() : async [SavedProposal] {

@@ -32,10 +32,13 @@ interface FormData {
 export default function GenerateForm({ onSuccess }: GenerateFormProps) {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormData>();
   const generateMutation = useGenerateProposal();
-  const { data: entitlements } = useGetEntitlements();
+  const { data: entitlements, isLoading: entitlementsLoading } = useGetEntitlements();
   const [experienceLevel, setExperienceLevel] = useState('');
 
-  const canGenerate = entitlements?.plan === 'premium' || (entitlements?.remainingFreeGenerations ?? 0) > 0;
+  // Safe check: ensure entitlements are loaded and values are numbers
+  const canGenerate = entitlements 
+    ? (entitlements.plan === 'premium' || entitlements.remainingFreeGenerations > 0)
+    : false;
 
   const onSubmit = async (data: FormData) => {
     if (!canGenerate) {
@@ -140,7 +143,7 @@ export default function GenerateForm({ onSuccess }: GenerateFormProps) {
             type="submit"
             size="lg"
             className="w-full"
-            disabled={generateMutation.isPending || !canGenerate}
+            disabled={generateMutation.isPending || !canGenerate || entitlementsLoading}
           >
             {generateMutation.isPending ? (
               <>
@@ -155,7 +158,7 @@ export default function GenerateForm({ onSuccess }: GenerateFormProps) {
             )}
           </Button>
 
-          {!canGenerate && (
+          {!canGenerate && !entitlementsLoading && (
             <p className="text-sm text-center text-destructive">
               You've used all your free generations. Upgrade to Premium for unlimited access.
             </p>

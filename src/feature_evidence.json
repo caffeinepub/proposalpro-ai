@@ -2,58 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-the-core-app-shell-for-proposalpro-ai-with-a-professional-minimal-clean-saas-dashboard-ui-including-top-level-navigation-and-routing-for-generate-dashboard-saved-proposals-and-account-upgrade",
-      "featureTitle": "Create the core app shell for “ProposalPro AI” with a professional, minimal, clean SaaS dashboard UI, including top-level navigation and routing for: Generate, Dashboard (saved proposals), and Account/Upgrade.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppShell.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/AccountPage.tsx",
-        "frontend/src/pages/DashboardPage.tsx",
-        "frontend/src/pages/GeneratePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-internet-identity-login-and-logged-in-session-gating-so-only-authenticated-users-can-generate-view-and-save-proposals-show-a-logged-out-landing-state-with-a-clear-call-to-action-to-sign-in",
-      "featureTitle": "Implement Internet Identity login and logged-in session gating so only authenticated users can generate, view, and save proposals; show a logged-out landing state with a clear call-to-action to sign in.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/auth/AuthGate.tsx",
-        "frontend/src/components/auth/UserMenu.tsx",
-        "frontend/src/pages/LandingPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-proposal-pitch-generation-workflow-accept-user-inputs-client-job-description-skills-experience-level-portfolio-link-and-generate-four-outputs-upwork-proposal-cold-email-pitch-short-dm-pitch-and-a-pricing-breakdown-suggestion",
-      "featureTitle": "Implement the proposal/pitch generation workflow: accept user inputs (client job description, skills, experience level, portfolio link) and generate four outputs: Upwork proposal, cold email pitch, short DM pitch, and a pricing breakdown suggestion.",
+      "featureId": "feature-fix-the-runtime-crash-that-occurs-immediately-after-clicking-generate-proposals-on-generate-minified-react-error-185-ensuring-the-generate-flow-completes-and-the-generated-content-renders-successfully",
+      "featureTitle": "Fix the runtime crash that occurs immediately after clicking “Generate Proposals” on /generate (Minified React error #185), ensuring the Generate flow completes and the Generated Content renders successfully.",
       "files": [
         "frontend/src/components/generate/GenerateForm.tsx",
         "frontend/src/components/generate/GeneratedOutputs.tsx",
-        "frontend/src/pages/GeneratePage.tsx"
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -64,80 +18,20 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-4"
+        "REQ-10"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-enforce-usage-limits-generating-content-consumes-1-free-generation-for-free-users-until-0-remain-premium-users-are-not-limited-show-clear-ui-messaging-when-the-free-quota-is-exhausted-and-guide-users-to-the-upgrade-screen",
-      "featureTitle": "Enforce usage limits: generating content consumes 1 free generation for Free users until 0 remain; Premium users are not limited; show clear UI messaging when the free quota is exhausted and guide users to the Upgrade screen.",
-      "files": [
-        "frontend/src/components/generate/QuotaBanner.tsx",
-        "frontend/src/pages/GeneratePage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-provide-an-editing-mode-for-generated-content-before-copying-allow-users-to-edit-each-of-the-four-generated-outputs-in-place-or-via-an-editor-view-and-then-copy-each-section-to-the-clipboard",
-      "featureTitle": "Provide an editing mode for generated content before copying: allow users to edit each of the four generated outputs in-place (or via an editor view) and then copy each section to the clipboard.",
-      "files": [
-        "frontend/src/components/generate/EditableOutputSection.tsx",
-        "frontend/src/components/generate/GeneratedOutputs.tsx",
-        "frontend/src/utils/clipboard.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-saving-and-dashboard-history-allow-users-to-save-a-generated-set-inputs-edited-outputs-to-their-account-and-view-a-dashboard-list-of-previous-proposals-include-proposal-detail-view-and-basic-actions-view-delete",
-      "featureTitle": "Implement saving and dashboard history: allow users to save a generated set (inputs + edited outputs) to their account and view a dashboard list of previous proposals; include proposal detail view and basic actions (view, delete).",
-      "files": [
-        "frontend/src/components/dashboard/SavedProposalsList.tsx",
-        "frontend/src/components/generate/SaveProposalButton.tsx",
-        "frontend/src/pages/DashboardPage.tsx",
-        "frontend/src/pages/GeneratePage.tsx",
-        "frontend/src/pages/ProposalDetailPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-an-account-upgrade-screen-that-displays-current-plan-free-premium-remaining-free-generations-if-applicable-and-an-upgrade-call-to-action-implement-backend-endpoints-to-support-plan-display-and-for-now-a-non-payment-upgrade-mechanism-suitable-for-development-environments",
-      "featureTitle": "Add an Account/Upgrade screen that displays current plan (Free/Premium), remaining free generations (if applicable), and an Upgrade call-to-action; implement backend endpoints to support plan display and (for now) a non-payment upgrade mechanism suitable for development environments.",
+      "featureId": "feature-normalize-subscription-entitlements-numeric-values-used-in-the-ui-so-that-comparisons-and-rendering-are-safe-and-consistent-across-the-app-e-g-remaining-free-generations-and-total-generations-and-update-generate-gating-logic-accordingly",
+      "featureTitle": "Normalize subscription/entitlements numeric values used in the UI so that comparisons and rendering are safe and consistent across the app (e.g., remaining free generations and total generations), and update Generate gating logic accordingly.",
       "files": [
         "frontend/src/components/account/PlanCard.tsx",
-        "frontend/src/pages/AccountPage.tsx"
+        "frontend/src/components/dashboard/SavedProposalsList.tsx",
+        "frontend/src/components/generate/QuotaBanner.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/ProposalDetailPage.tsx",
+        "frontend/src/utils/number.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -148,16 +42,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-8"
+        "REQ-11"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-generated-static-brand-assets-and-apply-them-in-the-ui-include-a-simple-proposalpro-ai-logo-wordmark-and-a-small-app-icon-served-from-static-frontend-assets-and-used-in-the-header-and-browser-favicon",
-      "featureTitle": "Add generated static brand assets and apply them in the UI: include a simple “ProposalPro AI” logo/wordmark and a small app icon, served from static frontend assets and used in the header and browser favicon.",
+      "featureId": "feature-add-a-minimal-regression-test-pass-manual-qa-checklist-to-validate-proposal-generation-quota-decrementing-for-free-users-and-stability-of-the-generate-dashboard-proposal-detail-pages-after-the-fix",
+      "featureTitle": "Add a minimal regression test pass (manual QA checklist) to validate proposal generation, quota decrementing for Free users, and stability of the Generate/Dashboard/Proposal Detail pages after the fix.",
       "files": [
-        "frontend/index.html",
-        "frontend/src/components/layout/AppShell.tsx"
+        "frontend/QA-MANUAL.md"
       ],
       "components": [
         "authorization@4.0.0",
@@ -168,7 +61,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-9"
+        "REQ-12"
       ],
       "confidence": "high"
     }
