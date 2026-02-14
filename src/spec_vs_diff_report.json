@@ -1,0 +1,86 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-14T00:42:09.661Z",
+  "summary": "The diff adds a routed dashboard-style frontend with auth gating, generation/edit/copy UI components, and a Motoko backend with user profiles, entitlement checks, and a generateProposal endpoint. However, key spec mismatches are present: free quota initialization is not 3, generation logic appears to be done on the frontend rather than deterministically on the backend, and there is no evidence of stable persistence across canister upgrades. Brand assets and favicon setup are not verifiable from the provided diff summary (assets files were omitted).",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "Free users start with 3 available generations and entitlements are persisted across sessions and canister upgrades using stable storage patterns.",
+      "reason": "Frontend initializes a new user profile with remainingFreeGenerations set to 10 (not 3). Also, there is no evidence in the shown backend code of stable variables/preupgrade/postupgrade logic to persist userProfiles/savedProposals across upgrades.",
+      "evidence": [
+        "frontend/src/hooks/useQueries.ts (remainingFreeGenerations: BigInt(10))",
+        "backend/main.mo (shown state uses Map.empty and var nextProposalId; no stable storage shown in truncated content)"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Generation is performed on the backend without third-party LLM integrations (deterministic templating/heuristics on the backend) and returns four outputs.",
+      "reason": "The GenerateForm constructs the four outputs on the frontend (generateUpworkProposal/generateColdEmail/generateShortDM/generatePricingBreakdown) and sends them to the backend; the backend generateProposal method returns the provided _output with a comment indicating real generation logic is not implemented.",
+      "evidence": [
+        "frontend/src/components/generate/GenerateForm.tsx (client-side output generation and passing { input, output } to backend)",
+        "backend/main.mo (generateProposal returns _output; comment: 'in real app, this would include generation logic')"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Logo and icon images exist under frontend/public/assets/generated and are referenced by the UI; app favicon/app icon is set from the generated icon.",
+      "reason": "The UI references images at /assets/generated/..., but the actual image files and any favicon setup are not shown in the diff summary (some added files were omitted due to limits), so there is insufficient evidence that the required static assets exist and that favicon wiring was implemented.",
+      "evidence": [
+        "frontend/src/components/layout/AppShell.tsx (references /assets/generated/proposalpro-icon.dim_256x256.png and /assets/generated/proposalpro-logo.dim_512x128.png)",
+        "File diff summary note: 'Omitted files due to limits: added=11'"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Admin/secret-token-based access-control initialization from a URL parameter (caffeineAdminToken) and explicit access control mixins/permissions checks.",
+      "reason": "The BuildRequest requires Internet Identity auth and a single-actor canister, but does not request an admin-token bootstrap mechanism or URL-secret initialization for access control.",
+      "evidence": [
+        "frontend/src/hooks/useActor.ts (getSecretParameter('caffeineAdminToken'); actor._initializeAccessControlWithSecret(adminToken))",
+        "backend/main.mo (imports authorization/MixinAuthorization and authorization/access-control; permission checks for #user/admin)"
+      ]
+    },
+    {
+      "description": "User 'profile setup' modal collecting a name field despite backend profiles not including a name.",
+      "reason": "The BuildRequest specifies subscription state (Free/Premium, remaining generations, counters) but does not request collecting a user name via a modal as part of onboarding.",
+      "evidence": [
+        "frontend/src/components/auth/ProfileSetupModal.tsx (collects 'Your Name *' and shows setup modal)"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/account/PlanCard.tsx",
+    "frontend/src/components/auth/AuthGate.tsx",
+    "frontend/src/components/auth/ProfileSetupModal.tsx",
+    "frontend/src/components/auth/UserMenu.tsx",
+    "frontend/src/components/dashboard/SavedProposalsList.tsx",
+    "frontend/src/components/generate/EditableOutputSection.tsx",
+    "frontend/src/components/generate/GenerateForm.tsx",
+    "frontend/src/components/generate/GeneratedOutputs.tsx",
+    "frontend/src/components/generate/QuotaBanner.tsx",
+    "frontend/src/components/generate/SaveProposalButton.tsx",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/AccountPage.tsx",
+    "frontend/src/pages/DashboardPage.tsx",
+    "frontend/src/pages/GeneratePage.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/pages/ProposalDetailPage.tsx",
+    "frontend/src/utils/clipboard.ts",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

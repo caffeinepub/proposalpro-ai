@@ -1,0 +1,23 @@
+{
+  "frontend/src/App.tsx": "Main application component that sets up TanStack Router with routes for landing, generate, dashboard, proposal detail, and account pages, wrapped in ThemeProvider with toast notifications.",
+  "frontend/src/pages/LandingPage.tsx": "Public landing page with hero section, feature highlights, and sign-in CTA that redirects authenticated users to the generate page.",
+  "frontend/src/components/auth/AuthGate.tsx": "Authentication wrapper component that redirects unauthenticated users to landing page and shows loading state during initialization.",
+  "frontend/src/components/auth/UserMenu.tsx": "Dropdown menu component displaying user principal with sign-out functionality, without referencing non-existent name property.",
+  "frontend/src/components/layout/AppShell.tsx": "Main dashboard layout with header navigation (Generate, Dashboard, Account), logo, user menu, and footer with attribution.",
+  "frontend/src/pages/GeneratePage.tsx": "Main proposal generation page containing the input form, quota banner, generated outputs display, and save functionality.",
+  "frontend/src/components/generate/GenerateForm.tsx": "Form component for collecting job description, skills, experience level, and portfolio link with validation and deterministic proposal generation logic using string concatenation to avoid template literal parsing errors.",
+  "frontend/src/components/generate/GeneratedOutputs.tsx": "Container component that renders four editable output sections (Upwork, cold email, DM, pricing) and tracks edited content.",
+  "frontend/src/components/generate/EditableOutputSection.tsx": "Reusable component for displaying and editing individual proposal sections with copy-to-clipboard functionality.",
+  "frontend/src/components/generate/QuotaBanner.tsx": "Alert banner showing current plan status, remaining free generations, and upgrade CTA when quota is low or exhausted.",
+  "frontend/src/components/generate/SaveProposalButton.tsx": "Button component that saves the current proposal (inputs and edited outputs) to the backend with loading state.",
+  "frontend/src/pages/DashboardPage.tsx": "Dashboard page displaying list of saved proposals with profile setup modal.",
+  "frontend/src/components/dashboard/SavedProposalsList.tsx": "List component showing saved proposals with view and delete actions, empty state, and confirmation dialogs.",
+  "frontend/src/pages/ProposalDetailPage.tsx": "Detail view page displaying a saved proposal's inputs and all generated outputs with copy and delete functionality, using correct authenticated route path.",
+  "frontend/src/pages/AccountPage.tsx": "Account management page showing subscription plan details and upgrade options with profile setup modal.",
+  "frontend/src/components/account/PlanCard.tsx": "Card component displaying current plan status, usage statistics, premium benefits, and developer upgrade button.",
+  "frontend/src/components/auth/ProfileSetupModal.tsx": "Modal dialog that prompts new users to enter their name on first login for UX purposes, preventing dismissal until completed.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including profile management, entitlements, proposal generation, saving, and deletion with proper SubscriptionPlan enum usage and cache invalidation.",
+  "frontend/src/utils/clipboard.ts": "Utility function for copying text to clipboard with fallback support for older browsers and non-secure contexts.",
+  "frontend/src/index.css": "Global styles with OKLCH color system defining minimal, professional design tokens for light and dark modes with neutral grayscale palette.",
+  "frontend/index.html": "HTML entry point with ProposalPro AI title and favicon reference to generated icon asset."
+}
